@@ -1,0 +1,11 @@
+{
+  "name": "ai-content-summarizer",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "build": "cd frontend && npm run build"
+  }
+}
