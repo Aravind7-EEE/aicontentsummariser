@@ -67,6 +67,41 @@ Use the following variables inside `backend/.env`:
 PORT=5000
 MONGO_URI=YOUR_MONGODB_CONNECTION_STRING
 GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+
+Security and deployment notes
+- Do NOT commit `backend/.env` or any file containing real secrets to Git.
+- Add `backend/.env` to `.gitignore` before creating local secrets.
+- For Vercel, set secrets in the Project > Settings > Environment Variables UI
+   rather than committing them.
+
+If a secret was accidentally pushed to the repo
+- Revoke/rotate the compromised key immediately from the provider.
+- Remove the file from Git history (choose one):
+
+   - Using `git filter-repo` (recommended):
+      ```bash
+      git clone --mirror <REPO_URL> repo.git
+      cd repo.git
+      git filter-repo --invert-paths --path backend/.env
+      git push --force
+      ```
+
+   - Using BFG cleaner:
+      ```bash
+      git clone --mirror <REPO_URL> repo.git
+      java -jar bfg.jar --delete-files .env repo.git
+      cd repo.git
+      git reflog expire --expire=now --all
+      git gc --prune=now --aggressive
+      git push --force
+      ```
+
+Running `npx vercel inspect` to debug a failed deployment
+- Run this locally in a terminal where you have `vercel` access:
+   ```bash
+   npx vercel inspect dpl_8pWemGQiqPVbxWznyQYpPwN3gUyW --logs
+   ```
+- Paste the resulting logs into the issue or here and I can help interpret them.
 ```
 
 ## Deploy to Vercel
